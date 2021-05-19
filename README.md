@@ -1,5 +1,5 @@
 # Dynamic-Analyzer-in-C
-This is the Compiler's course project Dynamic Analyzer in C
+This is the Compiler's course project Dynamic Analyzer in C using Antlr
 
 
 
