@@ -4,11 +4,11 @@ This is the Compiler's course project Dynamic Analyzer in C using Antlr
 
 
 
-Contributers:
-  Ahmed Hady\
-  Ahmed Hafez\
-  Yasser Mohamed\
-  Rama Njm aldeen
+##### Contributers:
+> * Ahmed Hady: [@Ahmed-Hady-168234]( https://github.com/Ahmed-Hady-168234 )
+> * Ahmed Hafez: [@Ahmed-Hafez]( https://github.com/Ahmed-Hafez )
+> * Yasser Mohamed
+> * Rama Njm aldeen
 
 
 
