@@ -329,6 +329,21 @@ nestedParenthesesBlock
         )*
     ;
 
+T__17 : '__extension__' ;
+T__2 : '__builtin_va_arg' ;
+T__3 : '__builtin_offsetof' ;
+T__18 : '__m128' ;
+T__19 : '__m128d' ;
+T__20 : '__m128i' ;
+T__21 : '__typeof__' ;
+T__25 : '__inline__' ;
+T__26 : '__stdcall' ;
+T__27 : '__declspec' ;
+T__32 : '__asm' ;
+T__30 : '__attribute__' ;
+T__33 : '__asm__' ;
+T__34 : '__volatile__' ;
+
 pointer
     :  (('*'|'^') typeQualifierList?)+ // ^ - Blocks language extension
     ;
