@@ -767,15 +767,29 @@ public interface C_grammarListener extends ParseTreeListener {
 	 */
 	void exitExpressionStatement(C_grammarParser.ExpressionStatementContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link C_grammarParser#selectionStatement}.
+	 * Enter a parse tree produced by the {@code ifStatement}
+	 * labeled alternative in {@link C_grammarParser#selectionStatement}.
 	 * @param ctx the parse tree
 	 */
-	void enterSelectionStatement(C_grammarParser.SelectionStatementContext ctx);
+	void enterIfStatement(C_grammarParser.IfStatementContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link C_grammarParser#selectionStatement}.
+	 * Exit a parse tree produced by the {@code ifStatement}
+	 * labeled alternative in {@link C_grammarParser#selectionStatement}.
 	 * @param ctx the parse tree
 	 */
-	void exitSelectionStatement(C_grammarParser.SelectionStatementContext ctx);
+	void exitIfStatement(C_grammarParser.IfStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code switch}
+	 * labeled alternative in {@link C_grammarParser#selectionStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterSwitch(C_grammarParser.SwitchContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code switch}
+	 * labeled alternative in {@link C_grammarParser#selectionStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitSwitch(C_grammarParser.SwitchContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link C_grammarParser#iterationStatement}.
 	 * @param ctx the parse tree

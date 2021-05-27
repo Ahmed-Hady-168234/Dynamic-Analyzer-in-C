@@ -6864,6 +6864,17 @@ public class C_grammarParser extends Parser {
 	}
 
 	public static class SelectionStatementContext extends ParserRuleContext {
+		public SelectionStatementContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_selectionStatement; }
+	 
+		public SelectionStatementContext() { }
+		public void copyFrom(SelectionStatementContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	public static class IfStatementContext extends SelectionStatementContext {
 		public TerminalNode If() { return getToken(C_grammarParser.If, 0); }
 		public TerminalNode LeftParen() { return getToken(C_grammarParser.LeftParen, 0); }
 		public ExpressionContext expression() {
@@ -6877,22 +6888,43 @@ public class C_grammarParser extends Parser {
 			return getRuleContext(StatementContext.class,i);
 		}
 		public TerminalNode Else() { return getToken(C_grammarParser.Else, 0); }
-		public TerminalNode Switch() { return getToken(C_grammarParser.Switch, 0); }
-		public SelectionStatementContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_selectionStatement; }
+		public IfStatementContext(SelectionStatementContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof C_grammarListener ) ((C_grammarListener)listener).enterSelectionStatement(this);
+			if ( listener instanceof C_grammarListener ) ((C_grammarListener)listener).enterIfStatement(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof C_grammarListener ) ((C_grammarListener)listener).exitSelectionStatement(this);
+			if ( listener instanceof C_grammarListener ) ((C_grammarListener)listener).exitIfStatement(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof C_grammarVisitor ) return ((C_grammarVisitor<? extends T>)visitor).visitSelectionStatement(this);
+			if ( visitor instanceof C_grammarVisitor ) return ((C_grammarVisitor<? extends T>)visitor).visitIfStatement(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class SwitchContext extends SelectionStatementContext {
+		public TerminalNode Switch() { return getToken(C_grammarParser.Switch, 0); }
+		public TerminalNode LeftParen() { return getToken(C_grammarParser.LeftParen, 0); }
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
+		public TerminalNode RightParen() { return getToken(C_grammarParser.RightParen, 0); }
+		public StatementContext statement() {
+			return getRuleContext(StatementContext.class,0);
+		}
+		public SwitchContext(SelectionStatementContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof C_grammarListener ) ((C_grammarListener)listener).enterSwitch(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof C_grammarListener ) ((C_grammarListener)listener).exitSwitch(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof C_grammarVisitor ) return ((C_grammarVisitor<? extends T>)visitor).visitSwitch(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -6905,6 +6937,7 @@ public class C_grammarParser extends Parser {
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case If:
+				_localctx = new IfStatementContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(988);
@@ -6932,6 +6965,7 @@ public class C_grammarParser extends Parser {
 				}
 				break;
 			case Switch:
+				_localctx = new SwitchContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(997);

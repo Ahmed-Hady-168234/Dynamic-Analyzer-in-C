@@ -466,11 +466,19 @@ public interface C_grammarVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpressionStatement(C_grammarParser.ExpressionStatementContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link C_grammarParser#selectionStatement}.
+	 * Visit a parse tree produced by the {@code ifStatement}
+	 * labeled alternative in {@link C_grammarParser#selectionStatement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitSelectionStatement(C_grammarParser.SelectionStatementContext ctx);
+	T visitIfStatement(C_grammarParser.IfStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code switch}
+	 * labeled alternative in {@link C_grammarParser#selectionStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSwitch(C_grammarParser.SwitchContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link C_grammarParser#iterationStatement}.
 	 * @param ctx the parse tree

@@ -5,7 +5,7 @@ import org.antlr.v4.runtime.tree.*;
 public class testing {
     public static void main(String[] args)throws Exception
     {
-        String inputFile = "t.expr";
+        String inputFile = "t.c";
         FileInputStream is = new FileInputStream(inputFile);
         ANTLRInputStream   input = new ANTLRInputStream(is);
         C_grammarLexer lexer = new C_grammarLexer(input);
@@ -15,10 +15,13 @@ public class testing {
         //ParseTree tree = parser.nestedParenthesesBlock();
 
         //ParseTree tree = parser.compoundStatement();
-        ParseTree tree = parser.compoundStatement();
+        //
+        //ParseTree tree = parser.statement();
+        //ParseTree tree = parser.functionDefinition();
+        ParseTree tree = parser.compilationUnit();
         //System.out.println(tree.toStringTree(parser));
         ParseTreeWalker parseTreeWalker = new ParseTreeWalker();
 
-        parseTreeWalker.walk(new C_grammarBaseListener(),tree);
+        parseTreeWalker.walk(new analyzer(),tree);
     }
 }

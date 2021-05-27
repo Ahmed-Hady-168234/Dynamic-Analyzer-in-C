@@ -9,39 +9,37 @@ import org.antlr.v4.runtime.tree.TerminalNode;
  * which can be extended to create a listener which only needs to handle a subset
  * of the available methods.
  */
-
 public class C_grammarBaseListener implements C_grammarListener {
-	int scopes = 0;
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterPrimaryExpression(C_grammarParser.PrimaryExpressionContext ctx) {}
+	@Override public void enterPrimaryExpression(C_grammarParser.PrimaryExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitPrimaryExpression(C_grammarParser.PrimaryExpressionContext ctx) {}
+	@Override public void exitPrimaryExpression(C_grammarParser.PrimaryExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGenericSelection(C_grammarParser.GenericSelectionContext ctx) {}
+	@Override public void enterGenericSelection(C_grammarParser.GenericSelectionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitGenericSelection(C_grammarParser.GenericSelectionContext ctx) {}
+	@Override public void exitGenericSelection(C_grammarParser.GenericSelectionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGenericAssocList(C_grammarParser.GenericAssocListContext ctx) {}
+	@Override public void enterGenericAssocList(C_grammarParser.GenericAssocListContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -53,7 +51,7 @@ public class C_grammarBaseListener implements C_grammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGenericAssociation(C_grammarParser.GenericAssociationContext ctx) { ;}
+	@Override public void enterGenericAssociation(C_grammarParser.GenericAssociationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -65,7 +63,7 @@ public class C_grammarBaseListener implements C_grammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterPostfixExpression(C_grammarParser.PostfixExpressionContext ctx) { ;}
+	@Override public void enterPostfixExpression(C_grammarParser.PostfixExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -653,13 +651,13 @@ public class C_grammarBaseListener implements C_grammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterNestedParenthesesBlock(C_grammarParser.NestedParenthesesBlockContext ctx) {}
+	@Override public void enterNestedParenthesesBlock(C_grammarParser.NestedParenthesesBlockContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitNestedParenthesesBlock(C_grammarParser.NestedParenthesesBlockContext ctx) {}
+	@Override public void exitNestedParenthesesBlock(C_grammarParser.NestedParenthesesBlockContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -857,7 +855,7 @@ public class C_grammarBaseListener implements C_grammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterStatement(C_grammarParser.StatementContext ctx) {}
+	@Override public void enterStatement(C_grammarParser.StatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -881,11 +879,7 @@ public class C_grammarBaseListener implements C_grammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterCompoundStatement(C_grammarParser.CompoundStatementContext ctx) {
-		scopes++;
-		System.out.println(scopes);
-
-	}
+	@Override public void enterCompoundStatement(C_grammarParser.CompoundStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -933,13 +927,25 @@ public class C_grammarBaseListener implements C_grammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterSelectionStatement(C_grammarParser.SelectionStatementContext ctx) { }
+	@Override public void enterIfStatement(C_grammarParser.IfStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitSelectionStatement(C_grammarParser.SelectionStatementContext ctx) { }
+	@Override public void exitIfStatement(C_grammarParser.IfStatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSwitch(C_grammarParser.SwitchContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSwitch(C_grammarParser.SwitchContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -439,7 +439,9 @@ labeledStatement
     ;
 
 compoundStatement
-    :   '{' blockItemList? '}'
+    :   '{'
+     blockItemList?
+     '}'
     ;
 
 blockItemList
@@ -456,8 +458,8 @@ expressionStatement
     ;
 
 selectionStatement
-    :   'if' '(' expression ')' statement ('else' statement)?
-    |   'switch' '(' expression ')' statement
+    :   'if' '(' expression ')' statement ('else' statement)?   # ifStatement
+    |   'switch' '(' expression ')' statement                   # switch
     ;
 
 iterationStatement
