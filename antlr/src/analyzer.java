@@ -9,15 +9,12 @@ public class analyzer extends C_grammarBaseListener{
     int numIf = 0;        /*if, else*/
     int numSwitch = 0;    /*switch*/
     int numIteration = 0; /*loop (for,while,do while)*/
+
     @Override public void enterCompoundStatement(C_grammarParser.CompoundStatementContext ctx) {
         ++numCompoundStatement;
         //System.out.println("enterCompoundStatement" + ++scopesIn);
     }
 
-    @Override public void enterStatement(C_grammarParser.StatementContext ctx) {
-       // ++numStatement;
-        //System.out.println("enterStatement"+ ++numStatement);
-    }
 
     @Override public void exitCompoundStatement(C_grammarParser.CompoundStatementContext ctx) {
        // scopesOut++;
@@ -27,21 +24,8 @@ public class analyzer extends C_grammarBaseListener{
 
 
     @Override public void enterLabeledStatement(C_grammarParser.LabeledStatementContext ctx) {
-
         numLabeled++;
-        //System.out.println("case in"+ numCases);
-        //numCompoundStatement++;
     }
-
-
-    @Override public void exitLabeledStatement(C_grammarParser.LabeledStatementContext ctx) {
-        //System.out.println("exitLabeledStatement");
-    }
-
-//    @Override public void enterSelectionStatement(C_grammarParser.SelectionStatementContext ctx) {
-//        numSelection++;
-//        //System.out.println("enterSelectionStatement");
-//    }
 
     @Override public void enterIfStatement(C_grammarParser.IfStatementContext ctx) {
         if(ctx.getChildCount() >= 6) {
@@ -58,11 +42,7 @@ public class analyzer extends C_grammarBaseListener{
     }
    // @Override public void exitSelectionStatement(C_grammarParser.SelectionStatementContext ctx) {//System.out.println("exitSelectionStatement");  }
 
-
-
-
     @Override public void enterFunctionDefinition(C_grammarParser.FunctionDefinitionContext ctx) {
-        System.out.println("Fun in");
         numFunction++;
     }
 
