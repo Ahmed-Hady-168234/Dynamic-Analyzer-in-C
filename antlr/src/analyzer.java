@@ -44,25 +44,12 @@ public class analyzer extends C_grammarBaseListener{
 //    }
 
     @Override public void enterIfStatement(C_grammarParser.IfStatementContext ctx) {
-
-        System.out.println("Num of chlids"+ctx.getChildCount());
-        for (int i = 0 ; i < ctx.getChildCount(); ++i){
-            var chlid = ctx.getChild(i);
-            System.out.println(chlid);
-        }
-        System.out.println("Btngan ==========> " + ((TerminalNodeImpl)ctx.getChild(0)).symbol.getLine());
-//        System.out.println("Btngan symbol ==========> " + ((TerminalNodeImpl)ctx.getChild(5)).symbol.getText());
         if(ctx.getChildCount() >= 6) {
-            System.out.println("There is else");
-            System.out.println("Btngan ==========> " + ((TerminalNodeImpl)ctx.getChild(0)).symbol.getLine());
             numIf++;
-        } else {
-            System.out.println("There is no else");
-            System.out.println("Btngan ==========> " + ((TerminalNodeImpl)ctx.getChild(0)).symbol.getLine());
-
-
+            var elseParseTree = ((C_grammarParser.StatementContext)ctx.getChild(6)).children.get(0);
+            if(elseParseTree.getChildCount() >= 6)
+                numIf--;
         }
-
         numIf++;
     }
 
