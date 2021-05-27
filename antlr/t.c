@@ -1,8 +1,9 @@
 int main (void)
 {
     int x=10;
-    print(10);
+   print(1004);
     if(x == 10){
+    x++;
         switch(x){
             case 0:
                 break;

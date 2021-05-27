@@ -1,3 +1,5 @@
+import org.antlr.v4.runtime.RuleContext;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.antlr.v4.runtime.tree.TerminalNodeImpl;
 
 public class analyzer extends C_grammarBaseListener{
@@ -13,6 +15,7 @@ public class analyzer extends C_grammarBaseListener{
     @Override public void enterCompoundStatement(C_grammarParser.CompoundStatementContext ctx) {
         ++numCompoundStatement;
         //System.out.println("enterCompoundStatement" + ++scopesIn);
+
     }
 
 
@@ -30,11 +33,13 @@ public class analyzer extends C_grammarBaseListener{
     @Override public void enterIfStatement(C_grammarParser.IfStatementContext ctx) {
         if(ctx.getChildCount() >= 6) {
             numIf++;
+            //write in file x.txt    & t.c y.c x.txt
             var elseParseTree = ((C_grammarParser.StatementContext)ctx.getChild(6)).children.get(0);
             if(elseParseTree.getChildCount() >= 6)
                 numIf--;
         }
         numIf++;
+        //ctx.addAnyChild(new String("x++"));
     }
 
     @Override public void enterSwitch(C_grammarParser.SwitchContext ctx) {
