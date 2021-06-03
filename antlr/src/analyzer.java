@@ -53,6 +53,7 @@ public class analyzer extends C_grammarBaseListener{
             var elseParseTree = ((C_grammarParser.StatementContext)ctx.getChild(6)).children.get(0);
             if(elseParseTree.getChildCount() >= 6)
                 numIf--;
+            
         }
         numIf++;
 
