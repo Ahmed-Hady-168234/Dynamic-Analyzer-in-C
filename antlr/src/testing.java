@@ -1,4 +1,5 @@
 import java.io.*;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -149,22 +150,25 @@ public class testing {
         outStream.write(code.getBytes());
         System.out.println("file output "+code);
 ///////////////////////////////////////////////////////////////
-        String progPath = "\"D:\\Ahmed Hady\\college\\Second Term\\Compilers\\Project\\Dynamic-Analyzer-in-C\\antlr\\";
+        String progPath = "E:\\GitHub Projects\\Dynamic-Analyzer-in-C\\antlr";
         String gccPath = "C:\\MinGW\\bin";
-        String command = "cmd.exe /c gcc.exe "+progPath+processingFile+"\" -o "+progPath+"output.exe\"";
+        String command = "cmd.exe /c gcc.exe \""+progPath + "\\" +processingFile+"\" -o \""+progPath+"\\output.exe\"";
         File dir = new File(gccPath);
         Process processCompile = Runtime.getRuntime().exec(command,null,dir);
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(processCompile.getInputStream()));
-        List<Integer> flags = new ArrayList<>();
         String line;
         while ((line = reader.readLine()) != null) {
-            //flags.add(Integer.parseInt(line));
+            System.out.println(line);
         }
         //processCompile = Runtime.getRuntime().exec("cmd.exe /c dir",null, new File("D:\\Ahmed Hady\\college\\Second Term\\Compilers\\Project\\Dynamic-Analyzer-in-C\\antlr"));
         processCompile.destroy();
         System.out.println("--------------------------------------------------------------------------------------");
-        Process processRun = Runtime.getRuntime().exec("cmd.exe /c dir",null, new File("D:\\Ahmed Hady\\college\\Second Term\\Compilers\\Project\\Dynamic-Analyzer-in-C\\antlr"));
+        Process processRun = Runtime.getRuntime().exec("cmd /c output.exe",null, new File(progPath));
+        reader = new BufferedReader(new InputStreamReader(processRun.getInputStream()));
+        while ((line = reader.readLine()) != null) {
+            System.out.println(line);
+        }
         processRun.destroy();
         //reader.close();
 
