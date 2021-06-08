@@ -22,15 +22,97 @@ public class testing {
     /**switchStart array 1d contains the switch start line*/
     public static int switchStart[]=new int[10000];
 
+    /**Contain the line number of the left brace of the main function*/
     public static int mainFunLeftBrace;
+
+    /**Contain the line number of the right brace of the main function*/
     public static int mainFunRightBrace;
 
+    /**Array to put the input code in it*/
+    public static String[] codeLines;
+
+    /**Array to put the code after adding flags in it*/
+    public static String code;
+
+    /**Variable used to count the number of code lines in the program*/
+    public static int lineNumber = 1;
+
+    /**Array which will contain the flags values */
+    public static int finalFlag[];
+
+    /**Object used with the files to read*/
+    public static Scanner myReader;
+
+    /**
+     *@brief <b>main<b>
+     *_______________________________________________________________
+     */
     public static void main(String[] args)throws Exception
     {
-        String inputFile  = "t.c";
-        String valuesFile = "values.txt";
-        String processingFile = "x.c";
-        FileInputStream is = new FileInputStream(inputFile);
+        String inputFile  = "t.c";          /**Input c file Name*/
+        String valuesFile = "values.txt";   /**Values file name (will contain flags values)*/
+        String processingFile = "x.c";      /**The c file in that contains the original code + flags*/
+        FileInputStream is = null;          /**Used with files*/
+        String progPath = "D:\\Ahmed Hady\\college\\Second Term\\Compilers\\Project\\Dynamic-Analyzer-in-C\\antlr"; /**path of the program*/
+        String gccPath = "C:\\MinGW\\bin";  /**The compiler path*/
+        String htmlFileName = "output.html";/**The html file name*/
+
+        /*Step 1*/
+        /**Run the C_grammar file using ANTLR*/
+        runAntlr(inputFile, is);
+
+        /*Step 2*/
+        /**Get the code from the input file and put it in codeLines array*/
+        getInputCode(inputFile  ,is);
+        code = "";
+
+        /*Step 3*/
+        /**Add flags to each line of code that could be run to detect whether it have been visited or not
+         * the new code is added to the String code*/
+        addFlagsToInputCode(valuesFile);
+
+        /*Step 4*/
+        /**Create file to run the new code(used to run the code with flags)*/
+        createFileToRun(processingFile);
+
+        /*Step 5*/
+        /**Compile and run the new file(which contains the code + flags)*/
+        runNewFile(processingFile,progPath,gccPath);
+
+        /*Array used to put the flags values in it*/
+        System.out.println(lineNumber);
+        finalFlag = new int[lineNumber+5];
+
+        /*Step 6*/
+        /**Get the values of the flags(added by the c program after we injected some lines to create and write in this file ) from values.txt*/
+        getFlagsValues(valuesFile);
+
+        /*Step 7*/
+        /**Handle the flags of the lines that addFlagsToInputCode() couldn't handle after the runing*/
+        handleDeadLines();
+
+        /*Step 8*/
+        /**Produce the HTML final file*/
+        produceHtmlFile(inputFile,htmlFileName);
+
+
+        /*Step 9*/
+        /**Run the produced html file*/
+        runHtmlFile(progPath, htmlFileName);
+
+    }
+
+
+    /**
+     *@brief <b>Step 1 runAntlr<b>
+     *@details This function Runs the C_grammar file using ANTLR
+     *@param Input <b>inputFile</b> String contains the input file name with extension
+     *
+     * @param Input <b>is</b>used to put the FileInputStream in it
+     *_______________________________________________________________
+     */
+    public static void runAntlr(String inputFile,FileInputStream is) throws Exception {
+        is = new FileInputStream(inputFile);
         ANTLRInputStream   input = new ANTLRInputStream(is);
         C_grammarLexer lexer = new C_grammarLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -41,49 +123,43 @@ public class testing {
         ParseTreeWalker parseTreeWalker = new ParseTreeWalker();
         parseTreeWalker.walk(new analyzer(),tree);
 
-//        byte[] buffer = new byte[is.available()];
-//        is.read(buffer);
-//        int flagCounter = 0;
-//        int numOfFlags = 0;
-//        String code = new String(buffer);
-//        String[] codeLines = code.split(";\s*\r\n");
-//        numOfFlags += codeLines.length - 1;
-//        code = "";
-//        for (int i = 0;i< codeLines.length - 1; i++, flagCounter++) {
-//            code = code.concat(codeLines[i] + ", flag[" + flagCounter + "] = true;\n");
-//        }
-//        code = code.concat(codeLines[codeLines.length - 1]);
-//
-//        codeLines = code.split("\\{");
-//        numOfFlags += codeLines.length - 1;
-//        code = "";
-//        for (int i = 0; i< codeLines.length - 1; i++, flagCounter++) {
-//            code = code.concat(codeLines[i] + "{ flag[" + flagCounter + "] = true;");
-//        }
-//        code = code.concat(codeLines[codeLines.length - 1]);
-//
-//        System.out.println(code);
-//
-//        File targetFile = new File(processingFile);
-//
-//        OutputStream outStream = new FileOutputStream(targetFile);
-//        outStream.write(buffer);
+    }
 
-        //////////////////////////////////////
+    /**
+     *@brief <b>Step 2 getInputCode<b>
+     *@details This function gets the code from the input file and put it in codeLines array
+     *@param Input <b>inputFile</b> String contains the input file name with extension
+     * @param Input <b>is</b>used to put the FileInputStream in it
+     *_______________________________________________________________
+     */
+    public static void getInputCode(String inputFile,FileInputStream is)throws Exception{
         is = new FileInputStream(inputFile);
         byte[] buffer = new byte[is.available()];
         is.read(buffer);
-        String code = new String(buffer);
-        String[] codeLines = code.split("\r\n");
-        code = "";
-        int lineNumber = 1;
+        code = new String(buffer);
+        codeLines = code.split("\r\n");
+    }
 
+    /**
+     *@brief <b>Step 3 addFlagsToInputCode<b>
+     *@details This function Add flags to each line of code that could be run to detect whether it have been visited or not
+     *       * the new code is added to the String "code"
+     *@param input <b>valuesFile</b> String contains the values file name with extension
+     *_______________________________________________________________
+     */
+    public static void addFlagsToInputCode( String valuesFile){
+        for(int i = 0; i < codeLines.length; i++, lineNumber++){
 
-
-            for(int i = 0; i < codeLines.length; i++, lineNumber++){
+            /**Make anything before the first function high*/
             if (i < funStartStop[0][0]){
                 code += codeLines[i] +"\r\n";
             }else {
+                Pattern detectCaseStartPattern = Pattern.compile("[\s\t\r\n]*case.*:[\s\t\r\n]*");
+                Matcher detectCaseStartPatternMatcher = detectCaseStartPattern.matcher(codeLines[i]);
+
+                Pattern detectLabelStartPattern = Pattern.compile("[\s\t\r\n]*.*:[\s\t\r\n]*");
+                Matcher detectLabelStartPatternMatcher = detectLabelStartPattern.matcher(codeLines[i]);
+
                 if (codeLines[i].contains(";")) {
                     Pattern detectForPattern = Pattern.compile("[s\t\n]*for\\(.+;.*;.*\\)");
                     Matcher detectForMatcher = detectForPattern.matcher(codeLines[i]);
@@ -95,6 +171,8 @@ public class testing {
 
                     Pattern detectEnteringScopePattern = Pattern.compile("[\s\t\r\n]*\\{[\s\t\r\n]*");
                     Matcher detectEnteringScopeMatcher = detectEnteringScopePattern.matcher(codeLines[i]);
+
+
                     if (detectEnteringScopeMatcher.find()) {
                         code += codeLines[i] + "flag[" + lineNumber + "] = 1;\r\n";
                     } else if (detectForMatcher.find()) {
@@ -118,82 +196,105 @@ public class testing {
                             code += "flag[" + lineNumber + "] = 1;\r\n";
                         }
                     }
-                } else if (codeLines[i].contains(":")) {
+                }else if (detectCaseStartPatternMatcher.find()) {/**Detect start of the case (in switch)*/
                     code += codeLines[i] + "flag[" + lineNumber + "] = 1;" + "\r\n";
 
-                } else if (codeLines[i].contains("}")) {
+                } else if (codeLines[i].contains("}")) {/**Detects any rgiht brace*/
                     code += "flag[" + lineNumber + "] = 1;" + codeLines[i] + "\r\n";
+                }else if(detectLabelStartPatternMatcher.find() == true && detectCaseStartPatternMatcher.find() == false){
+                    code += codeLines[i]+"flag[" + lineNumber + "] = 1;" + "\r\n";
+                }else if(false){
+
                 } else {
                     Pattern detectEnteringScopePattern = Pattern.compile("[\s\t\r\n]*\\{[\s\t\r\n]*");
                     Matcher detectEnteringScopeMatcher = detectEnteringScopePattern.matcher(codeLines[i]);
                     if (detectEnteringScopeMatcher.find()) {
                         code += codeLines[i] + "flag[" + lineNumber + "] = 1;\r\n";
                     }
-                     else {
+                    else {
                         code += codeLines[i] + "\r\n";
-                     }
+                    }
 
                 }
             }
-
+            int x = ifStartStop[1][0];
             if(lineNumber == mainFunLeftBrace){
                 code += "int i_file_counter__;FILE *fptr;fptr = fopen(\""+valuesFile+"\",\"w\");";
             }
         }
         //System.out.println("\n\n\n\n"+code);
         code = "int flag[" + lineNumber + "];\r\n#include <stdlib.h> \r\n" + code;
-//        System.out.println(code);
+    }
 
+    /**
+     *@brief <b>Step 4 createFileToRun<b>
+     *@details This function Creates file to run the new code(used to run the code with flags)
+     *@param input <b>processingFile</b> String contains the processing file name with extension
+     *_______________________________________________________________
+     */
+    public static void createFileToRun(String processingFile) throws Exception{
         File targetFile = new File(processingFile);
-
         OutputStream outStream = new FileOutputStream(targetFile);
         outStream.write(code.getBytes());
-        System.out.println("file output "+code);
-///////////////////////////////////////////////////////////////
-        String progPath = "E:\\GitHub Projects\\Dynamic-Analyzer-in-C\\antlr";
-        String gccPath = "C:\\MinGW\\bin";
+
+    }
+
+    /**
+     *@brief <b>Step 5 runNewFile<b>
+     *@details Compile and run the new file(which contains the code + flags)
+     *@param input <b>processingFile</b> String contains the processing file name with extension
+     *@param input <b>progPath</b> String contains the program path
+     *@param input <b>gccPath</b> String contains the gcc compiler path
+     *_______________________________________________________________
+     */
+    public static void runNewFile(String processingFile,String progPath,String gccPath) throws Exception{
         String command = "cmd.exe /c gcc.exe \""+progPath + "\\" +processingFile+"\" -o \""+progPath+"\\output.exe\"";
         File dir = new File(gccPath);
-        Process processCompile = Runtime.getRuntime().exec(command,null,dir);
+        Process newFileCompile = Runtime.getRuntime().exec(command,null,dir);
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(processCompile.getInputStream()));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            System.out.println(line);
-        }
-        //processCompile = Runtime.getRuntime().exec("cmd.exe /c dir",null, new File("D:\\Ahmed Hady\\college\\Second Term\\Compilers\\Project\\Dynamic-Analyzer-in-C\\antlr"));
-        processCompile.destroy();
-        System.out.println("--------------------------------------------------------------------------------------");
-        Process processRun = Runtime.getRuntime().exec("cmd /c output.exe",null, new File(progPath));
-        reader = new BufferedReader(new InputStreamReader(processRun.getInputStream()));
-        while ((line = reader.readLine()) != null) {
-            System.out.println(line);
-        }
-        processRun.destroy();
-        //reader.close();
+        /**Compile The new created file*/
+        BufferedReader reader = new BufferedReader(new InputStreamReader(newFileCompile.getInputStream()));
+        reader.readLine();
+        newFileCompile.destroy();
 
-///////////////////////////////////////////////////////////////
-        int finalFlag[] = new int[lineNumber];
-        System.out.println();
-        /**Get the values from values.txt*/
-        System.out.println("///////////////////////////////////////////////\n");
+        /**Run the output file (.exe)*/
+        Process newFileRun = Runtime.getRuntime().exec("cmd /c output.exe",null, new File(progPath));
+        reader = new BufferedReader(new InputStreamReader(newFileRun.getInputStream()));
+        reader.readLine();
+        newFileRun.destroy();
+    }
 
+    /**
+     *@brief <b>Step 6 getFlagsValues<b>
+     *@details This function Gets the values of the flags(added by the c program after we injected some lines to create and write in this file ) from values.txt
+     *@param input <b>valuesFile</b> String contains the values file name with extension
+     *_______________________________________________________________
+     */
+    public static void getFlagsValues(String valuesFile)throws Exception{
         File finalValuesFile = new File(valuesFile);
         finalValuesFile.createNewFile();
 
         File myObj = new File(valuesFile);
-        Scanner myReader = new Scanner(myObj);
+        myReader = new Scanner(myObj);
         int j = 0;
         while (myReader.hasNextLine()) {
             String data = myReader.nextLine();
             finalFlag[j] = Integer.parseInt(data);
-            System.out.println(j +"  "+ finalFlag[j]);
             j++;
         }
-        System.out.println("hhhh");
         myReader.close();
-            System.out.println("\n///////////////////////////////////////////////\n");
-///////////////////////////////////////////////////////////////
+    }
+
+    /**
+     *@brief <b>Step 7 handleDeadLines<b>
+     *@details Handle the flags of the lines that addFlagsToInputCode() couldn't handle after the runing
+     *@see enterIfStatement()
+     *@see enterSwitch()
+     *@see enterFunctionDefinition()
+     *@see enterIterationStatement()
+     *_______________________________________________________________
+     */
+    public static void handleDeadLines(){
 
         int switchStartPtr   = 0;
         int funStartStopPtr   = 0;
@@ -202,29 +303,27 @@ public class testing {
         int funLeftBraceLine  = funStartStop[funStartStopPtr][1];
         int funRightBraceLine = funStartStop [funStartStopPtr][2];
 
-        //finalFlag[5] = finalFlag[40] = finalFlag[45] = finalFlag[51] = 1;
-
         for (int i = 0 ; i <= lineNumber ; i++) {
 
-/*******The next line are used to detect the part before the functions(includes, defines, structs, ....., etc ) ********/
-            if (funStartStop[0][0]+1>i)//to get the part before the functions
+/*******The next lines are used to detect the part before the functions(includes, defines, structs, ....., etc ) ********/
+            if (funStartStop[0][0]+1>i)//To make the part before the functions high
             {
                 finalFlag[i] = 1;
             }
 
-/*******The next line are used to detect the function's start, leftBrace and rightBrace Lines ********/
+/*******The next lines are used to detect the function's start, leftBrace and rightBrace Lines ********/
             /**if the current line(i) is the function's start line*/
             if (funStartStop[funStartStopPtr][0] == i &&
                     /**And if the flag of the left brace of the function is high*/
-                   finalFlag[ funLeftBraceLine ]== 1){
-                
+                    finalFlag[ funLeftBraceLine ]== 1){
+
                 /**Make the flag of the fun start line high*/
                 finalFlag[i] = 1;
             }
-            
+
             /**Did we reach the function's right brace ? */
             if ( funRightBraceLine == i) {
-                
+
                 /**Point to the next fun*/
                 funStartStopPtr++;
             }
@@ -254,34 +353,32 @@ public class testing {
 
 
 /*******The next line are used to detect the loop(for, while only) with no braces ********/
-        /**If the current line is within the loop(that have no braces) start end scope*/
-        if (loopStartStop[loopStartStopPtr][0] <= i && loopStartStop[loopStartStopPtr][1] >= i ){
-            /**And if the flag of the if child is high*/
-            if (finalFlag [loopStartStop[loopStartStopPtr][1]] == 1) {
+            /**If the current line is within the loop(that have no braces) start end scope*/
+            if (loopStartStop[loopStartStopPtr][0] <= i && loopStartStop[loopStartStopPtr][1] >= i ){
+                /**And if the flag of the if child is high*/
+                if (finalFlag [loopStartStop[loopStartStopPtr][1]] == 1) {
 
-                /**Make the current line flag's high*/
-                finalFlag[i] = 1;
+                    /**Make the current line flag's high*/
+                    finalFlag[i] = 1;
+                }
+            }else if(loopStartStop[loopStartStopPtr][1] < i){
+                /**Lets move the pointer to point to the next if (that doesn't have braces)*/
+                loopStartStopPtr++;
             }
-        }else if(loopStartStop[loopStartStopPtr][1] < i){
-            /**Lets move the pointer to point to the next if (that doesn't have braces)*/
-            loopStartStopPtr++;
         }
     }
-        System.out.println("///////////////////");
-        for (int i = 0; i < lineNumber; i++) {
-            System.out.println(i + " "+ finalFlag[i]);
-        }
 
-
-///////////////////////////////////////////////////////////////////
+    /**
+     *@brief <b>Step 8 produceHtmlFile<b>
+     *@details Produce the HTML final file
+     *@param input <b>inputFile</b> String contains the input file name with extension
+     *@param input <b>htmlFileName</b> String contains the html file name with extension
+     *_______________________________________________________________
+     */
+    public static void produceHtmlFile(String inputFile, String htmlFileName)throws Exception{
         File getInputLines = new File(inputFile);
         myReader = new Scanner(getInputLines);
 
-
-        System.out.println("hhhhgggg");
-
-
-        String htmlFileName = "output.html";
         File finalHtmlFile = new File(htmlFileName);
         finalHtmlFile.createNewFile();
         FileWriter myWriter = new FileWriter(htmlFileName);
@@ -290,8 +387,10 @@ public class testing {
             myWriter.write("");
             if (myReader.hasNextLine()) {
                 String inputLine = myReader.nextLine();
-                System.out.println(inputLine);
+                inputLine = inputLine.replace("<", "&lt");
+                inputLine = inputLine.replace(">", "&gt");
                 if (finalFlag[i] == 0){/**red*/
+
                     myWriter.write("<p style=\"color:red;\">"+ inputLine +"</p>\r\n");
                 }else if(finalFlag[i] == 1) {/**green*/
                     myWriter.write("<p style=\"color:green;\">"+ inputLine +"</p>\r\n");
@@ -304,26 +403,22 @@ public class testing {
 
         myWriter.write("</body></html>");
         myWriter.close();
-///////////////////////////////////////////////////////////////////
-//        File dir = new File("src");
-//        Process process = Runtime.getRuntime().exec("cmd.exe /c gcc ",null,dir);
-//        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-//        List<Integer> flags = new ArrayList<>();
-//        String line;
-//        while ((line = reader.readLine()) != null) {
-//            flags.add(Integer.parseInt(line));
-//        }
-//        process.destroy();
-//        reader.close();
-
-        System.out.println();
-//        numOfFlags += codeLines.length - 1;
-//        code = "";
-//        for (int i = 0;i< codeLines.length - 1; i++, flagCounter++) {
-//            code = code.concat(codeLines[i] + ", flag[" + flagCounter + "] = true;\n");
-//        }
-//        code = code.concat(codeLines[codeLines.length - 1]);
+    }
 
 
+    /**
+     *@brief <b>Step 9 runHtmlFile<b>
+     *@details Run the produced html file
+     *@param input <b>progPath</b> String contains the program path
+     *@param input <b>htmlFileName</b> String contains the html file name with extension
+     *_______________________________________________________________
+     */
+    public static void runHtmlFile(String progPath,String htmlFileName) throws Exception{
+
+        /**Run the html file (.exe)*/
+        Process newFileRun = Runtime.getRuntime().exec("cmd /c "+htmlFileName+" ",null, new File(progPath));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(newFileRun.getInputStream()));
+        reader.readLine();
+        newFileRun.destroy();
     }
 }
